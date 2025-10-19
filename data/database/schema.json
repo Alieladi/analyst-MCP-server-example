@@ -1,0 +1,261 @@
+{
+    "title": "Schema",
+    "description": "Supermarket Database Schema",
+    "type": "object",
+    "properties": {
+        "tables": {
+            "type": "object",
+            "properties": {
+                "categories.schema": {
+                    "title": "Categories",
+                    "table_name": "categories",
+                    "description": "Product categories with flat structure",
+                    "type": "object",
+                    "properties": {
+                        "category_id": {
+                            "type": "integer",
+                            "description": "Unique identifier for the category (auto-increment)"
+                        },
+                        "category_name": {
+                            "type": "string",
+                            "description": "Name of the category (must be unique)"
+                        }
+                    },
+                    "relationships": {
+                        "description": "Foreign key relationships and connections to other tables",
+                        "outgoing": [],
+                        "incoming": [
+                            {
+                                "type": "one_to_many",
+                                "source_table": "products",
+                                "local_key": [
+                                    "category_id"
+                                ],
+                                "foreign_key": [
+                                    "category_id"
+                                ],
+                                "description": "Each category can have multiple products"
+                            }
+                        ]
+                    }
+                },
+                "products.schema": {
+                    "title": "Products",
+                    "table_name": "products",
+                    "description": "Product catalog with approximately 1000 items including names, brands, descriptions, pricing, and barcodes",
+                    "type": "object",
+                    "properties": {
+                        "product_id": {
+                            "type": "integer",
+                            "description": "Unique identifier for the product (auto-increment)"
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the product"
+                        },
+                        "brand": {
+                            "type": "string",
+                            "description": "Brand name of the product"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Detailed description of the product"
+                        },
+                        "category_id": {
+                            "type": "integer",
+                            "description": "Foreign key reference to the category"
+                        },
+                        "price": {
+                            "type": "number",
+                            "description": "Current price of the product"
+                        },
+                        "unit_size": {
+                            "type": "string",
+                            "description": "Size or quantity of the product unit (e.g., '500g', '1L')"
+                        },
+                        "barcode": {
+                            "type": "string",
+                            "description": "Unique barcode identifier for the product"
+                        }
+                    },
+                    "relationships": {
+                        "description": "Foreign key relationships and connections to other tables",
+                        "outgoing": [
+                            {
+                                "type": "many_to_one",
+                                "target_table": "categories",
+                                "local_key": [
+                                    "category_id"
+                                ],
+                                "foreign_key": [
+                                    "category_id"
+                                ],
+                                "description": "Each product belongs to one category"
+                            }
+                        ],
+                        "incoming": [
+                            {
+                                "type": "one_to_many",
+                                "source_table": "transaction_items",
+                                "local_key": [
+                                    "product_id"
+                                ],
+                                "foreign_key": [
+                                    "product_id"
+                                ],
+                                "description": "Products can appear in multiple transaction items"
+                            },
+                            {
+                                "type": "one_to_one",
+                                "source_table": "inventory",
+                                "local_key": [
+                                    "product_id"
+                                ],
+                                "foreign_key": [
+                                    "product_id"
+                                ],
+                                "description": "Each product has one inventory record tracking stock levels"
+                            }
+                        ]
+                    }
+                },
+                "transactions.schema": {
+                    "title": "Transactions",
+                    "table_name": "transactions",
+                    "description": "Customer transactions recording purchase events",
+                    "type": "object",
+                    "properties": {
+                        "transaction_id": {
+                            "type": "integer",
+                            "description": "Unique identifier for the transaction (auto-increment)"
+                        },
+                        "timestamp": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date and time when the transaction occurred (defaults to current timestamp)"
+                        },
+                        "total_amount": {
+                            "type": "number",
+                            "description": "Total amount of the transaction"
+                        }
+                    },
+                    "relationships": {
+                        "description": "Foreign key relationships and connections to other tables",
+                        "outgoing": [],
+                        "incoming": [
+                            {
+                                "type": "one_to_many",
+                                "source_table": "transaction_items",
+                                "local_key": [
+                                    "transaction_id"
+                                ],
+                                "foreign_key": [
+                                    "transaction_id"
+                                ],
+                                "description": "Each transaction can have multiple line items"
+                            }
+                        ]
+                    }
+                },
+                "transaction_items.schema": {
+                    "title": "Transaction Items",
+                    "table_name": "transaction_items",
+                    "description": "Line items for each transaction, recording products purchased with quantities and prices",
+                    "type": "object",
+                    "properties": {
+                        "transaction_item_id": {
+                            "type": "integer",
+                            "description": "Unique identifier for the transaction item (auto-increment)"
+                        },
+                        "transaction_id": {
+                            "type": "integer",
+                            "description": "Foreign key reference to the parent transaction"
+                        },
+                        "product_id": {
+                            "type": "integer",
+                            "description": "Foreign key reference to the product purchased"
+                        },
+                        "quantity": {
+                            "type": "integer",
+                            "description": "Number of units purchased"
+                        },
+                        "price_at_purchase": {
+                            "type": "number",
+                            "description": "Price of the product at the time of purchase (historical pricing)"
+                        }
+                    },
+                    "relationships": {
+                        "description": "Foreign key relationships and connections to other tables",
+                        "outgoing": [
+                            {
+                                "type": "many_to_one",
+                                "target_table": "transactions",
+                                "local_key": [
+                                    "transaction_id"
+                                ],
+                                "foreign_key": [
+                                    "transaction_id"
+                                ],
+                                "description": "Each item belongs to one transaction"
+                            },
+                            {
+                                "type": "many_to_one",
+                                "target_table": "products",
+                                "local_key": [
+                                    "product_id"
+                                ],
+                                "foreign_key": [
+                                    "product_id"
+                                ],
+                                "description": "Each item references one product"
+                            }
+                        ],
+                        "incoming": []
+                    }
+                },
+                "inventory.schema": {
+                    "title": "Inventory",
+                    "table_name": "inventory",
+                    "description": "Current stock levels for all products",
+                    "type": "object",
+                    "properties": {
+                        "inventory_id": {
+                            "type": "integer",
+                            "description": "Unique identifier for the inventory record (auto-increment)"
+                        },
+                        "product_id": {
+                            "type": "integer",
+                            "description": "Foreign key reference to the product (must be unique)"
+                        },
+                        "quantity_in_stock": {
+                            "type": "integer",
+                            "description": "Current quantity available in stock (defaults to 0)"
+                        },
+                        "last_updated": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date and time when the inventory was last updated (defaults to current timestamp)"
+                        }
+                    },
+                    "relationships": {
+                        "description": "Foreign key relationships and connections to other tables",
+                        "outgoing": [
+                            {
+                                "type": "one_to_one",
+                                "target_table": "products",
+                                "local_key": [
+                                    "product_id"
+                                ],
+                                "foreign_key": [
+                                    "product_id"
+                                ],
+                                "description": "Each inventory record tracks one product"
+                            }
+                        ],
+                        "incoming": []
+                    }
+                }
+            }
+        }
+    }
+}
