@@ -1,5 +1,5 @@
-This is an example of an MCP server for data query and analysis.
-
+This is an example of an MCP server for data query and analysis applied on a synthetic supermarket database.
+Check out https://medium.com/@alieladi/core-components-of-a-data-query-analysis-mcp-server-ec2cd6cde34d for more info!
 ## Tool summary
 
 | Tool                                   | Purpose                                      |
