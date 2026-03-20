@@ -25,11 +25,11 @@ Steps
 2) Optional but recommended: Install dependencies with uv:
      - From the repo root (this folder):
          - Sync the server env without activating a venv:
-             - `uv sync --directory supermarket/mcp_server`
+             - `uv sync --directory mcp_server`
          - Or create and activate a venv explicitly:
              - `uv venv --python 3.13`
              - `source .venv/bin/activate`
-             - `cd supermarket/mcp_server && uv sync`
+             - `cd mcp_server && uv sync`
 Note: Without this step, the first mcp server run may take a few minutes if uv needs to install Python or large dependencies.
 
 3) Get a `VOYAGE_API_KEY` — required for semantic search in `search_products_catalog`- from https://www.voyageai.com/
